@@ -1,0 +1,16 @@
+{
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "angular",
+        "releaseRules": [
+          { "type": "chore", "release": "patch" },
+          { "type": "fix", "release": "minor" },
+          { "type": "feat", "release": "minor" }
+        ]
+      }
+    ],
+    "@semantic-release/release-notes-generator"
+  ]
+}
