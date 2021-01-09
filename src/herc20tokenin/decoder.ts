@@ -2,29 +2,18 @@
 // --------------------------------------------------------
 //    inject(address[],uint256[])                // 0xd0797f84
 
-import { isNil, mapValues } from "lodash";
-import { ethers } from "ethers";
-import { ParamType } from "ethers/lib/utils";
-
-type Result = {
-  [key: string]: any;
-};
+import { ethers } from 'ethers';
+import { ParamType } from 'ethers/lib/utils';
+import { mapValues } from 'lodash';
+import { Result } from '../types';
+import { decodeDataUsingFunctionsBySignature } from '../utils';
 
 const decodeFunctionBySignatures: Map<string, Function> = new Map([
-  ["0xd0797f84", (data: string) => inject(data)],
+  ['0xd0797f84', (data: string) => inject(data)],
 ]);
 
-export const execHErc20TokenIn = (data: string) => {
-  const signature = data.slice(0, 10);
-  const decoder = decodeFunctionBySignatures.get(signature);
-
-  if (isNil(decoder)) {
-    throw Error("invalid signature");
-  }
-
-  const dataWithoutSignature = data.slice(10);
-  return decoder.call(null, `0x${dataWithoutSignature}`);
-};
+export const execHErc20TokenIn = (data: string) =>
+  decodeDataUsingFunctionsBySignature(decodeFunctionBySignatures, data);
 
 // (1) 0xd0797f84
 const inject = (data: string): Result => {
@@ -32,12 +21,12 @@ const inject = (data: string): Result => {
   // uint256[] calldata amounts
   const params = [
     ParamType.fromObject({
-      name: "tokens",
-      type: "address[]",
+      name: 'tokens',
+      type: 'address[]',
     }),
     ParamType.fromObject({
-      name: "amounts",
-      type: "uint256[]",
+      name: 'amounts',
+      type: 'uint256[]',
     }),
   ];
   const decodedData = ethers.utils.defaultAbiCoder.decode(params, data);

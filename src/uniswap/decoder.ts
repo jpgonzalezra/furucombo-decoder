@@ -11,30 +11,19 @@
 //    swapExactTokensForTokens(uint256,uint256,address[])             // 0x86818f26
 //    swapTokensForExactTokens(uint256,uint256,address[])             // 0x397d4b4a
 
-import { isNil, mapValues } from "lodash";
-import { ethers } from "ethers";
-import { ParamType } from "ethers/lib/utils";
-
-type Result = {
-  [key: string]: any;
-};
+import { ethers } from 'ethers';
+import { ParamType } from 'ethers/lib/utils';
+import { mapValues } from 'lodash';
+import { Result } from '../types';
+import { decodeDataUsingFunctionsBySignature } from '../utils';
 
 const decodeFunctionBySignatures: Map<string, Function> = new Map([
-  ["0xd0241dac", (data: string) => swapExactETHForTokens(data)],
-  ["0xef66f725", (data: string) => swapExactTokensForETH(data)],
+  ['0xd0241dac', (data: string) => swapExactETHForTokens(data)],
+  ['0xef66f725', (data: string) => swapExactTokensForETH(data)],
 ]);
 
-export const execUniswap = (data: string) => {
-  const signature = data.slice(0, 10);
-  const decoder = decodeFunctionBySignatures.get(signature);
-
-  if (isNil(decoder)) {
-    throw Error("invalid signature");
-  }
-
-  const dataWithoutSignature = data.slice(10);
-  return decoder.call(null, `0x${dataWithoutSignature}`);
-};
+export const execUniswap = (data: string) =>
+  decodeDataUsingFunctionsBySignature(decodeFunctionBySignatures, data);
 
 // (5) 0xd0241dac
 const swapExactETHForTokens = (data: string): Result => {
@@ -43,16 +32,16 @@ const swapExactETHForTokens = (data: string): Result => {
   // address[] calldata path
   const params = [
     ParamType.fromObject({
-      name: "value",
-      type: "uint256",
+      name: 'value',
+      type: 'uint256',
     }),
     ParamType.fromObject({
-      name: "amountOutMin",
-      type: "uint256",
+      name: 'amountOutMin',
+      type: 'uint256',
     }),
     ParamType.fromObject({
-      name: "path",
-      type: "address[]",
+      name: 'path',
+      type: 'address[]',
     }),
   ];
   const decodedData = ethers.utils.defaultAbiCoder.decode(params, data);
@@ -67,20 +56,19 @@ const swapExactTokensForETH = (data: string): Result => {
   // address[] calldata path
   const params = [
     ParamType.fromObject({
-      name: "amountIn",
-      type: "uint256",
+      name: 'amountIn',
+      type: 'uint256',
     }),
     ParamType.fromObject({
-      name: "amountOutMin",
-      type: "uint256",
+      name: 'amountOutMin',
+      type: 'uint256',
     }),
     ParamType.fromObject({
-      name: "path",
-      type: "address[]",
+      name: 'path',
+      type: 'address[]',
     }),
   ];
   const decodedData = ethers.utils.defaultAbiCoder.decode(params, data);
   // creates an object with the same values that decoded (key,value) array
   return mapValues(decodedData);
 };
-

@@ -2,24 +2,19 @@
 // --------------------------------------------------------
 //    batchExec(address[],bytes[])       // 0x74a28f79
 
-import { execUniswap } from "../uniswap/decoder";
-import { ethers } from "ethers";
-import { ParamType } from "ethers/lib/utils";
-import { execHErc20TokenIn } from "../herc20tokenin/decoder";
-
-type Result = {
-  [key: string]: any;
-};
+import { execUniswap } from '../uniswap/decoder';
+import { ethers } from 'ethers';
+import { ParamType } from 'ethers/lib/utils';
+import { execHErc20TokenIn } from '../herc20tokenin/decoder';
+import { Result } from '../types';
+import {
+  HERC20_CONTRACT_ADDRESS,
+  HUNISWAP_CONTRACT_ADDRESS,
+} from '../constants';
 
 const getProtocolByAddress: Map<string, Function> = new Map([
-  [
-    "0x58a21cfCee675d65D577B251668f7dC46Ea9c3A0",
-    (data: string) => execUniswap(data),
-  ],
-  [
-    "0x914490a362F4507058403A99E28bdF685C5c767f",
-    (data: string) => execHErc20TokenIn(data),
-  ],
+  [HUNISWAP_CONTRACT_ADDRESS, (data: string) => execUniswap(data)],
+  [HERC20_CONTRACT_ADDRESS, (data: string) => execHErc20TokenIn(data)],
 ]);
 
 export const decoder = (data: string) => {
@@ -33,12 +28,12 @@ const batchExec = (data: string): Result => {
   // bytes[] datas
   const params = [
     ParamType.fromObject({
-      name: "tos",
-      type: "address[]",
+      name: 'tos',
+      type: 'address[]',
     }),
     ParamType.fromObject({
-      name: "datas",
-      type: "bytes[]",
+      name: 'datas',
+      type: 'bytes[]',
     }),
   ];
   const decodedData = ethers.utils.defaultAbiCoder.decode(params, data);
