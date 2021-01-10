@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "ethers": "^5.0.24",
+    "js-sha3": "^0.8.0",
     "lodash": "^4.17.20"
   }
 }
