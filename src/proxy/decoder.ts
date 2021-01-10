@@ -2,7 +2,7 @@
 // --------------------------------------------------------
 //    batchExec(address[],bytes[])       // 0x74a28f79
 
-import { execUniswap } from '../uniswap/decoder';
+import { execUniswap } from '../huniswap/decoder';
 import { ethers } from 'ethers';
 import { ParamType } from 'ethers/lib/utils';
 import { execHErc20TokenIn } from '../herc20tokenin/decoder';
